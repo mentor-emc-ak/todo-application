@@ -1,22 +1,31 @@
 import { useState, useEffect } from "react";
 
-const STORAGE_KEY = "taskr-todos";
+const STORAGE_PREFIX = "taskr-todos";
 
-function loadFromStorage() {
+function storageKey(userId) {
+  return `${STORAGE_PREFIX}-${userId}`;
+}
+
+function loadFromStorage(userId) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey(userId));
     return raw ? JSON.parse(raw) : [];
   } catch {
     return [];
   }
 }
 
-export function useTodos() {
-  const [todos, setTodos] = useState(loadFromStorage);
+export function useTodos(userId) {
+  const [todos, setTodos] = useState(() => loadFromStorage(userId));
+
+  // Reload when user changes
+  useEffect(() => {
+    setTodos(loadFromStorage(userId));
+  }, [userId]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-  }, [todos]);
+    localStorage.setItem(storageKey(userId), JSON.stringify(todos));
+  }, [todos, userId]);
 
   const addTodo = (text) => {
     const trimmed = text.trim();

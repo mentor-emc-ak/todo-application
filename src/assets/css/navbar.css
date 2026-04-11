@@ -44,6 +44,55 @@
   letter-spacing: 0.08em;
 }
 
+/* Logged-in user area */
+.taskr-user {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.taskr-username {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  letter-spacing: 0.06em;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskr-username::before {
+  content: '( ';
+  color: var(--color-faint);
+}
+
+.taskr-username::after {
+  content: ' )';
+  color: var(--color-faint);
+}
+
+.taskr-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--color-faint);
+  background: none;
+  border: 1px solid var(--color-faint);
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.taskr-logout:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
 nav ul a {
 	color: var(--text-muted);
 	text-decoration: none;

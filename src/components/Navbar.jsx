@@ -16,7 +16,7 @@ export default function Navbar({ user, onLogout }) {
       <div className="taskr-nav-inner">
         <div className="taskr-brand">
           <span className="taskr-dot" aria-hidden="true">●</span>
-          <span className="taskr-title">TASKR</span>
+          <span className="taskr-title">EMC Master Class TASKR</span>
         </div>
 
         {user ? (

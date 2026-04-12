@@ -131,7 +131,7 @@ export default function AuthPage({ onLogin, onSignup }) {
             className="text-4xl tracking-widest"
             style={{ fontFamily: "var(--font-display)", fontWeight: 800, color: "var(--color-text)" }}
           >
-            TASKR
+            EMC Master Class TASKR
           </span>
           <span style={{ color: "var(--color-accent)", fontSize: "0.55rem" }}>●</span>
         </div>

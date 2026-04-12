@@ -5,7 +5,7 @@ export default function Footer() {
         className="text-faint text-xs tracking-widest"
         style={{ fontFamily: "var(--font-mono)" }}
       >
-        TASKR © {new Date().getFullYear()}
+        EMC Master Class TASKR © {new Date().getFullYear()}
       </p>
     </footer>
   );

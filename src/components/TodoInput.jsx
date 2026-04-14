@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 
-export default function TodoInput({ onAdd }) {
+function TodoInput({ onAdd }) {
   const [text, setText] = useState("");
 
   const handleSubmit = (e) => {
@@ -32,3 +32,5 @@ export default function TodoInput({ onAdd }) {
     </form>
   );
 }
+
+export default memo(TodoInput);

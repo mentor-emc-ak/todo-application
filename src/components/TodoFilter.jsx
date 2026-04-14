@@ -1,10 +1,12 @@
+import { memo } from "react";
+
 const FILTERS = [
   { key: "all", label: "ALL" },
   { key: "active", label: "ACTIVE" },
   { key: "completed", label: "DONE" },
 ];
 
-export default function TodoFilter({
+function TodoFilter({
   filter,
   onFilterChange,
   activeCount,
@@ -50,3 +52,5 @@ export default function TodoFilter({
     </div>
   );
 }
+
+export default memo(TodoFilter);

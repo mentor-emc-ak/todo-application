@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -23,11 +23,11 @@ function TodoApp({ user }) {
 
   const [filter, setFilter] = useState("all");
 
-  const filteredTodos = todos.filter((todo) => {
+  const filteredTodos = useMemo(() => todos.filter((todo) => {
     if (filter === "active") return !todo.completed;
     if (filter === "completed") return todo.completed;
     return true;
-  });
+  }), [todos, filter]);
 
   return (
     <main className="flex-1 flex flex-col items-center px-4 py-10">

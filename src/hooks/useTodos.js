@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 const STORAGE_PREFIX = "taskr-todos";
 
@@ -27,7 +27,7 @@ export function useTodos(userId) {
     localStorage.setItem(storageKey(userId), JSON.stringify(todos));
   }, [todos, userId]);
 
-  const addTodo = (text) => {
+  const addTodo = useCallback((text) => {
     const trimmed = text.trim();
     if (!trimmed) return;
     setTodos((prev) => [
@@ -39,19 +39,19 @@ export function useTodos(userId) {
       },
       ...prev,
     ]);
-  };
+  }, []);
 
-  const toggleTodo = (id) => {
+  const toggleTodo = useCallback((id) => {
     setTodos((prev) =>
       prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
     );
-  };
+  }, []);
 
-  const deleteTodo = (id) => {
+  const deleteTodo = useCallback((id) => {
     setTodos((prev) => prev.filter((t) => t.id !== id));
-  };
+  }, []);
 
-  const editTodo = (id, text) => {
+  const editTodo = useCallback((id, text) => {
     const trimmed = text.trim();
     if (!trimmed) {
       deleteTodo(id);
@@ -60,14 +60,14 @@ export function useTodos(userId) {
     setTodos((prev) =>
       prev.map((t) => (t.id === id ? { ...t, text: trimmed } : t))
     );
-  };
+  }, [deleteTodo]);
 
-  const clearCompleted = () => {
+  const clearCompleted = useCallback(() => {
     setTodos((prev) => prev.filter((t) => !t.completed));
-  };
+  }, []);
 
-  const activeCount = todos.filter((t) => !t.completed).length;
-  const completedCount = todos.filter((t) => t.completed).length;
+  const activeCount = useMemo(() => todos.filter((t) => !t.completed).length, [todos]);
+  const completedCount = useMemo(() => todos.filter((t) => t.completed).length, [todos]);
 
   return {
     todos,

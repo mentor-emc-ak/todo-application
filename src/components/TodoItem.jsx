@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 function PencilIcon() {
   return (
@@ -20,7 +20,7 @@ function TrashIcon() {
   );
 }
 
-export default function TodoItem({ todo, onToggle, onDelete, onEdit }) {
+function TodoItem({ todo, onToggle, onDelete, onEdit }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(todo.text);
   const inputRef = useRef(null);
@@ -100,3 +100,5 @@ export default function TodoItem({ todo, onToggle, onDelete, onEdit }) {
     </div>
   );
 }
+
+export default React.memo(TodoItem);

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 
@@ -11,9 +11,8 @@ import TodoFilter from "./components/TodoFilter";
 import AuthPage from "./components/AuthPage";
 import { useTodos } from "./hooks/useTodos";
 import { useAuth } from "./hooks/useAuth";
-import { useAxios } from "./hooks/useAxios";
 
-function TodoApp({ user }) {
+function TodoApp() {
   const {
     todos,
     addTodo,
@@ -23,7 +22,7 @@ function TodoApp({ user }) {
     clearCompleted,
     activeCount,
     completedCount,
-  } = useTodos(user.id);
+  } = useTodos();
 
   const [filter, setFilter] = useState("all");
 
@@ -114,38 +113,25 @@ function TodoApp({ user }) {
   );
 }
 
-function ProtectedRoute({ children }) {
-  const { user } = useAuth();
-
-  if (!user) {
-    return <Navigate to="/auth" />;
-  }
-
+function ProtectedRoute({ user, authLoading, children }) {
+  if (authLoading) return null;
+  if (!user) return <Navigate to="/auth" />;
   return children;
 }
 
 function App() {
   const { user, signup, login, logout } = useAuth();
-
-  const { data } = useAxios('/todos');
-
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-    }
-  }, [data]);
-
-
+  const authLoading = user === undefined;
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/auth" element={<AuthPage onLogin={login} onSignup={signup} />} />
         <Route path="/" element={
-          <ProtectedRoute>
+          <ProtectedRoute user={user} authLoading={authLoading}>
             <div className="min-h-screen flex flex-col">
               <Navbar user={user} onLogout={logout} />
-              <TodoApp user={user} />
+              <TodoApp />
               <Footer />
             </div>
           </ProtectedRoute>
@@ -154,19 +140,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-
-  // // if not logged in, show auth page (true)
-  // if (!user) {
-  //   return <AuthPage onLogin={login} onSignup={signup} />;
-  // }
-
-  // return (
-  //   <div className="min-h-screen flex flex-col">
-  //     <Navbar user={user} onLogout={logout} />
-  //     <TodoApp user={user} />
-  //     <Footer />
-  //   </div>
-  // );
 }
 
 export default App;

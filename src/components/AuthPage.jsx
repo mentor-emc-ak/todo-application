@@ -79,26 +79,23 @@ export default function AuthPage({ onLogin, onSignup }) {
     setError("");
     setLoading(true);
 
-    // Small artificial delay for UX feedback
-    await new Promise((r) => setTimeout(r, 200));
-
     if (mode === "signup") {
-      const result = onSignup(username, email, password);
+      const result = await onSignup(username, email, password);
       if (!result.success) {
         setError(result.error);
+        setLoading(false);
         return;
       }
-      navigate("/"); // Redirect to home page after successful signup
     } else {
-      const result = onLogin(email, password);
+      const result = await onLogin(email, password);
       if (!result.success) {
         setError(result.error);
+        setLoading(false);
         return;
       }
-      navigate("/"); // Redirect to home page after successful login
     }
 
-    setLoading(false);
+    navigate("/");
   };
 
   return (

@@ -1,4 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -8,6 +11,7 @@ import TodoFilter from "./components/TodoFilter";
 import AuthPage from "./components/AuthPage";
 import { useTodos } from "./hooks/useTodos";
 import { useAuth } from "./hooks/useAuth";
+import axios from "axios";
 
 function TodoApp({ user }) {
   const {
@@ -110,20 +114,84 @@ function TodoApp({ user }) {
   );
 }
 
+function ProtectedRoute({ children }) {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/auth" />;
+  }
+
+  return children;
+}
+
+const axiosInstance = axios.create({
+  baseURL: 'https://dummyjson.com',
+});
+
+
 function App() {
   const { user, signup, login, logout } = useAuth();
 
-  if (!user) {
-    return <AuthPage onLogin={login} onSignup={signup} />;
+  // fetch('https://dummyjson.com/todos')
+  //   .then(res => res.json())
+  //   .then(console.log);
+
+  async function fetchTodos() {
+    try {
+      const res = await axiosInstance.get('/todos');
+      const todoRes = await axiosInstance.get(`/todo/${res.data.todos[0].id}`);
+      console.log(todoRes.data);
+    } catch (err) {
+      console.error(err);
+    }
   }
+  // axiosInstance.get('/todos')
+  //   .then(res => res.data)
+  //   .then(data => {
+  //     console.log(data)
+  //     console.log(data.todos[0])
+  //     axiosInstance.get(`/todo/${data.todos[0].id}`)
+  //       .then(res => res.data)
+  //       .then(todo => console.log(todo))
+  //   })
+  //   .catch(err => console.error(err));
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar user={user} onLogout={logout} />
-      <TodoApp user={user} />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/auth" element={<AuthPage onLogin={login} onSignup={signup} />} />
+        <Route path="/" element={
+          <ProtectedRoute>
+            <div className="min-h-screen flex flex-col">
+              <Navbar user={user} onLogout={logout} />
+              <TodoApp user={user} />
+              <Footer />
+            </div>
+          </ProtectedRoute>
+        } />
+        <Route path="*" element={<div>Page not found</div>} />
+      </Routes>
+    </BrowserRouter>
   );
+
+  // // if not logged in, show auth page (true)
+  // if (!user) {
+  //   return <AuthPage onLogin={login} onSignup={signup} />;
+  // }
+
+  // return (
+  //   <div className="min-h-screen flex flex-col">
+  //     <Navbar user={user} onLogout={logout} />
+  //     <TodoApp user={user} />
+  //     <Footer />
+  //   </div>
+  // );
 }
 
 export default App;

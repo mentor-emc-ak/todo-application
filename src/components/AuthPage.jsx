@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 function EyeIcon({ open }) {
   return open ? (
@@ -58,6 +59,8 @@ export default function AuthPage({ onLogin, onSignup }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const reset = () => {
     setError("");
     setUsername("");
@@ -81,10 +84,18 @@ export default function AuthPage({ onLogin, onSignup }) {
 
     if (mode === "signup") {
       const result = onSignup(username, email, password);
-      if (!result.success) setError(result.error);
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      navigate("/"); // Redirect to home page after successful signup
     } else {
       const result = onLogin(email, password);
-      if (!result.success) setError(result.error);
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      navigate("/"); // Redirect to home page after successful login
     }
 
     setLoading(false);
@@ -170,7 +181,7 @@ export default function AuthPage({ onLogin, onSignup }) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
-          {mode === "signup" && (
+          {mode === "signup" ? (
             <FormField
               label="Username"
               type="text"
@@ -178,8 +189,8 @@ export default function AuthPage({ onLogin, onSignup }) {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="your name"
             />
-          )}
-
+          ) : <></>}
+      
           <FormField
             label="Email"
             type="email"
@@ -224,7 +235,8 @@ export default function AuthPage({ onLogin, onSignup }) {
               color: "var(--color-bg)",
             }}
           >
-            {loading ? "..." : mode === "login" ? "SIGN IN" : "CREATE ACCOUNT"}
+            {/* condition ? true : false */}
+            {mode === "login" ? "SIGN IN" : "CREATE ACCOUNT"}
           </button>
         </form>
 

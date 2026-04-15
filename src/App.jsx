@@ -11,7 +11,7 @@ import TodoFilter from "./components/TodoFilter";
 import AuthPage from "./components/AuthPage";
 import { useTodos } from "./hooks/useTodos";
 import { useAuth } from "./hooks/useAuth";
-import axios from "axios";
+import { useAxios } from "./hooks/useAxios";
 
 function TodoApp({ user }) {
   const {
@@ -124,41 +124,16 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
-const axiosInstance = axios.create({
-  baseURL: 'https://dummyjson.com',
-});
-
-
 function App() {
   const { user, signup, login, logout } = useAuth();
 
-  // fetch('https://dummyjson.com/todos')
-  //   .then(res => res.json())
-  //   .then(console.log);
-
-  async function fetchTodos() {
-    try {
-      const res = await axiosInstance.get('/todos');
-      const todoRes = await axiosInstance.get(`/todo/${res.data.todos[0].id}`);
-      console.log(todoRes.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-  // axiosInstance.get('/todos')
-  //   .then(res => res.data)
-  //   .then(data => {
-  //     console.log(data)
-  //     console.log(data.todos[0])
-  //     axiosInstance.get(`/todo/${data.todos[0].id}`)
-  //       .then(res => res.data)
-  //       .then(todo => console.log(todo))
-  //   })
-  //   .catch(err => console.error(err));
+  const { data } = useAxios('/todos');
 
   useEffect(() => {
-    fetchTodos();
-  }, []);
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
 
 
 

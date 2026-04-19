@@ -6,37 +6,51 @@ const axiosInstance = axios.create({
 });
 
 export function useAxios(url) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const normalizedUrl = url ?? null;
+  const [state, setState] = useState(() => ({
+    data: null,
+    error: null,
+    loading: Boolean(normalizedUrl),
+    url: normalizedUrl,
+  }));
+
+  const isStale = state.url !== normalizedUrl;
+  const data = normalizedUrl ? (isStale ? null : state.data) : null;
+  const loading = normalizedUrl ? isStale || state.loading : false;
+  const error = normalizedUrl ? (isStale ? null : state.error) : null;
 
   useEffect(() => {
-    if (!url) return;
+    if (!normalizedUrl) return;
 
     let cancelled = false;
 
-    setLoading(true);
-    setError(null);
-
     axiosInstance
-      .get(url)
+      .get(normalizedUrl)
       .then((res) => {
         if (!cancelled) {
-          setData(res.data);
-          setLoading(false);
+          setState({
+            data: res.data,
+            error: null,
+            loading: false,
+            url: normalizedUrl,
+          });
         }
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(err);
-          setLoading(false);
+          setState({
+            data: null,
+            error: err,
+            loading: false,
+            url: normalizedUrl,
+          });
         }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [url]);
+  }, [normalizedUrl]);
 
   return { data, loading, error };
 }

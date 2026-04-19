@@ -1,0 +1,433 @@
+.taskr-chat-shell {
+	position: fixed;
+	right: 1.5rem;
+	bottom: 1.5rem;
+	z-index: 10010;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 1rem;
+	pointer-events: none;
+}
+
+.taskr-chat-shell > * {
+	pointer-events: auto;
+}
+
+.taskr-chat-window {
+	width: min(24rem, calc(100vw - 2rem));
+	height: min(50rem, calc(100vh - 7rem));
+	display: flex;
+	flex-direction: column;
+	border: 1px solid rgba(240, 140, 75, 0.24);
+	border-radius: 1.5rem;
+	overflow: hidden;
+	position: relative;
+	background:
+		radial-gradient(circle at top, rgba(240, 140, 75, 0.22), transparent 34%),
+		linear-gradient(180deg, rgba(34, 31, 31, 0.98), rgba(13, 12, 12, 0.98));
+	box-shadow:
+		0 24px 70px rgba(0, 0, 0, 0.42),
+		0 0 0 1px rgba(240, 140, 75, 0.06) inset;
+	backdrop-filter: blur(18px);
+	animation: taskrChatDockIn 180ms ease forwards;
+}
+
+.taskr-chat-window::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		linear-gradient(135deg, rgba(240, 140, 75, 0.08), transparent 35%),
+		radial-gradient(circle at bottom right, rgba(240, 140, 75, 0.08), transparent 25%);
+}
+
+.taskr-chat-header,
+.taskr-chat-band,
+.taskr-chat-suggestions,
+.taskr-chat-log,
+.taskr-chat-form,
+.taskr-chat-error {
+	position: relative;
+	z-index: 1;
+}
+
+.taskr-chat-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem 1rem 0.85rem;
+	border-bottom: 1px solid rgba(122, 114, 105, 0.18);
+}
+
+.taskr-chat-header__eyebrow {
+	margin: 0;
+	color: var(--color-accent);
+	font-family: var(--font-mono);
+	font-size: 0.68rem;
+	text-transform: uppercase;
+	letter-spacing: 0.24em;
+}
+
+.taskr-chat-header__title {
+	margin: 0.4rem 0 0;
+	font-family: var(--font-display);
+	font-size: 1.6rem;
+	line-height: 1;
+}
+
+.taskr-chat-header__meta {
+	margin: 0.65rem 0 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	color: var(--color-muted);
+	font-family: var(--font-mono);
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.16em;
+}
+
+.taskr-chat-status-dot {
+	width: 0.45rem;
+	height: 0.45rem;
+	border-radius: 999px;
+	background: var(--color-success);
+	box-shadow: 0 0 10px rgba(98, 196, 138, 0.6);
+}
+
+.taskr-chat-header__divider {
+	width: 1rem;
+	height: 1px;
+	background: rgba(122, 114, 105, 0.4);
+}
+
+.taskr-chat-header__actions {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.taskr-chat-icon-button {
+	width: 2.4rem;
+	height: 2.4rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	border: 1px solid rgba(122, 114, 105, 0.22);
+	background: rgba(24, 22, 22, 0.76);
+	color: var(--color-text);
+	cursor: pointer;
+	transition: transform 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.taskr-chat-icon-button:hover:not(:disabled) {
+	transform: translateY(-1px);
+	border-color: rgba(240, 140, 75, 0.45);
+	color: var(--color-accent);
+}
+
+.taskr-chat-icon-button:disabled {
+	cursor: default;
+	opacity: 0.4;
+}
+
+.taskr-chat-icon-button svg,
+.taskr-chat-submit svg,
+.taskr-chat-launcher__icon svg {
+	width: 1rem;
+	height: 1rem;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.7;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.taskr-chat-band {
+	padding: 0.8rem 1rem;
+	border-bottom: 1px solid rgba(122, 114, 105, 0.18);
+	color: var(--color-muted);
+	font-size: 0.82rem;
+	line-height: 1.45;
+	background: linear-gradient(90deg, rgba(240, 140, 75, 0.09), transparent);
+}
+
+.taskr-chat-suggestions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.55rem;
+	padding: 0.9rem 1rem 0;
+}
+
+.taskr-chat-suggestion {
+	border: 1px solid rgba(240, 140, 75, 0.18);
+	border-radius: 999px;
+	background: rgba(24, 22, 22, 0.84);
+	color: var(--color-text);
+	padding: 0.55rem 0.85rem;
+	font-family: var(--font-mono);
+	font-size: 0.76rem;
+	line-height: 1.4;
+	cursor: pointer;
+	transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.taskr-chat-suggestion:hover:not(:disabled) {
+	transform: translateY(-1px);
+	border-color: rgba(240, 140, 75, 0.45);
+	background: rgba(34, 31, 31, 0.95);
+}
+
+.taskr-chat-suggestion:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.taskr-chat-log {
+	flex: 1;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+	padding: 1rem;
+	scroll-behavior: smooth;
+}
+
+.taskr-chat-message {
+	max-width: 88%;
+	border-radius: 1.2rem;
+	padding: 0.8rem 0.95rem;
+	border: 1px solid rgba(122, 114, 105, 0.16);
+}
+
+.taskr-chat-message--assistant {
+	align-self: flex-start;
+	background: rgba(24, 22, 22, 0.92);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.taskr-chat-message--user {
+	align-self: flex-end;
+	background: linear-gradient(135deg, rgba(240, 140, 75, 0.28), rgba(80, 36, 14, 0.85));
+	border-color: rgba(240, 140, 75, 0.32);
+}
+
+.taskr-chat-message--loading {
+	opacity: 0.82;
+}
+
+.taskr-chat-message__role {
+	margin: 0 0 0.42rem;
+	color: var(--color-muted);
+	font-family: var(--font-mono);
+	font-size: 0.68rem;
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+}
+
+.taskr-chat-message__content {
+	margin: 0;
+	color: var(--color-text);
+	font-size: 0.92rem;
+	line-height: 1.55;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.taskr-chat-error {
+	margin: 0;
+	padding: 0 1rem 0.85rem;
+	color: #ffb0a5;
+	font-size: 0.8rem;
+	line-height: 1.45;
+}
+
+.taskr-chat-form {
+	border-top: 1px solid rgba(122, 114, 105, 0.18);
+	padding: 0.9rem 1rem 1rem;
+	background: linear-gradient(180deg, rgba(24, 22, 22, 0.8), rgba(13, 12, 12, 0.96));
+}
+
+.taskr-chat-textarea {
+	width: 100%;
+	min-height: 4.3rem;
+	max-height: 9rem;
+	resize: vertical;
+	border-radius: 1rem;
+	border: 1px solid rgba(122, 114, 105, 0.25);
+	background: rgba(13, 12, 12, 0.7);
+	color: var(--color-text);
+	padding: 0.9rem 1rem;
+	font-family: var(--font-mono);
+	font-size: 0.9rem;
+	line-height: 1.5;
+}
+
+.taskr-chat-textarea::placeholder {
+	color: var(--color-muted);
+}
+
+.taskr-chat-form__footer {
+	margin-top: 0.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+.taskr-chat-form__hint {
+	margin: 0;
+	color: var(--color-faint);
+	font-family: var(--font-mono);
+	font-size: 0.68rem;
+	text-transform: uppercase;
+	letter-spacing: 0.16em;
+}
+
+.taskr-chat-submit {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.55rem;
+	border: none;
+	border-radius: 999px;
+	padding: 0.8rem 1rem;
+	background: linear-gradient(135deg, var(--color-accent), #c75b18);
+	color: var(--color-bg);
+	font-family: var(--font-mono);
+	font-size: 0.76rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: transform 140ms ease, opacity 140ms ease;
+}
+
+.taskr-chat-submit:hover:not(:disabled) {
+	transform: translateY(-1px);
+}
+
+.taskr-chat-submit:disabled {
+	cursor: default;
+	opacity: 0.35;
+}
+
+.taskr-chat-launcher {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.9rem;
+	min-width: 13rem;
+	border: 1px solid rgba(240, 140, 75, 0.2);
+	border-radius: 999px;
+	padding: 0.85rem 1.05rem;
+	background: linear-gradient(135deg, rgba(240, 140, 75, 0.96), rgba(186, 83, 26, 0.96));
+	color: var(--color-bg);
+	cursor: pointer;
+	box-shadow: 0 18px 40px rgba(240, 140, 75, 0.28);
+	transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+.taskr-chat-launcher:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 24px 48px rgba(240, 140, 75, 0.32);
+}
+
+.taskr-chat-launcher--active {
+	opacity: 0.92;
+}
+
+.taskr-chat-launcher__pulse {
+	position: absolute;
+	inset: -0.35rem;
+	border: 1px solid rgba(240, 140, 75, 0.35);
+	border-radius: 999px;
+	animation: taskrChatPulse 1.8s ease-out infinite;
+}
+
+.taskr-chat-launcher__icon {
+	width: 2.2rem;
+	height: 2.2rem;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	background: rgba(13, 12, 12, 0.12);
+}
+
+.taskr-chat-launcher__copy {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.taskr-chat-launcher__copy strong {
+	font-family: var(--font-display);
+	font-size: 1rem;
+	line-height: 1;
+}
+
+.taskr-chat-launcher__copy small {
+	margin-top: 0.18rem;
+	font-family: var(--font-mono);
+	font-size: 0.67rem;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+@keyframes taskrChatDockIn {
+	from {
+		opacity: 0;
+		transform: translateY(18px) scale(0.97);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
+@keyframes taskrChatPulse {
+	0% {
+		opacity: 0.4;
+		transform: scale(0.98);
+	}
+
+	70%,
+	100% {
+		opacity: 0;
+		transform: scale(1.08);
+	}
+}
+
+@media (max-width: 640px) {
+	.taskr-chat-shell {
+		left: 1rem;
+		right: 1rem;
+		bottom: 1rem;
+		align-items: stretch;
+	}
+
+	.taskr-chat-window {
+		width: 100%;
+		height: min(34rem, calc(100vh - 6.5rem));
+	}
+
+	.taskr-chat-form__footer {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.taskr-chat-submit {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.taskr-chat-launcher {
+		align-self: flex-end;
+		min-width: auto;
+	}
+}

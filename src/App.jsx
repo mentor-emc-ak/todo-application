@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ChatWidget from "./components/ChatWidget";
 import TodoInput from "./components/TodoInput";
 import TodoItem from "./components/TodoItem";
 import TodoFilter from "./components/TodoFilter";
@@ -133,6 +134,7 @@ function App() {
               <Navbar user={user} onLogout={logout} />
               <TodoApp />
               <Footer />
+              <ChatWidget />
             </div>
           </ProtectedRoute>
         } />
